@@ -4,12 +4,19 @@ import streamlit as st
 ############################# Adjustment Function ##############################
 
 def adjust_transcript(transcript: str) -> str:
+    """Adjusts the end times in a WEBVTT formatted file, to match the following start times"""
+
+    assert transcript, 'No text provided. Please paste the transcript.'
+    
     # Find all timestamps
     timestamps = re.findall(r'(\d{2}:\d{2}:\d{2}\.\d{3})', transcript)
 
     timestamp_objects = re.findall(r'(\d{2}:\d{2}:\d{2}\.\d{3}) --> (\d{2}:\d{2}:\d{2}\.\d{3})', transcript)
 
     arrows = re.findall(r'-->', transcript)
+
+    assert timestamps, 'No timestamps found in the transcript. \
+        \n - Are they in the format "HH:MM:SS.mmm"?'
 
     assert len(timestamp_objects) == len(timestamps) / 2, \
         'Mismatch between total timestamps and the "start --> end" sections. \
@@ -83,6 +90,7 @@ if st.button("Fix Transcript"):
         
         # Display the adjusted transcript
         st.subheader("Fixed Transcript:")
+        st.write('\U00002757 \U00002757 `Remember: You MUST change the final timestamp` \U00002757 \U00002757')
         st.text_area("Output transcript", adjusted_transcript, height=300)
         
     except Exception as e:
